@@ -1,0 +1,13 @@
+loan_defaults:
+  outputs:
+    dev:
+      type: duckdb
+      path: 'loan_defaults.duckdb'
+      threads: 4
+    
+    prod:
+      type: duckdb
+      path: '/path/to/prod/loan_defaults.duckdb'
+      threads: 8
+      
+  target: dev

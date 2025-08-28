@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Cleaned orders table with arrears flags"
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: month_year_order
+        tests: [not_null]
+
+  - name: stg_shoppers
+    description: "Cleaned shoppers with calculated age"
+    columns:
+      - name: shopper_id
+        tests: [unique, not_null]
+      - name: shopper_age
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 18
+              max_value: 100
+
+  - name: loan_defaults_monitoring
+    description: "Base monitoring table with period flags"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [order_id, delayed_period]
+
+  - name: loan_default_ratio
+    description: "Final KPI model calculating default ratio per segment"
+    columns:
+      - name: default_ratio
+        description: "Proportion of orders in default for the period"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
